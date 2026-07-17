@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TON Earnings Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= CONFETTI CANVAS (full-screen overlay for celebration bursts) ================= -->
+<canvas id="confettiCanvas"></canvas>
+
+<!-- ================= TOAST NOTIFICATION ================= -->
+<div id="toast" class="toast"></div>
+
+<!-- ================= APP SHELL ================= -->
+<div class="app-shell">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">◆</span>
+      <div class="topbar-titles">
+        <h1>TON Tracker</h1>
+        <p id="topbarDate">—</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeToggleBtn" title="Toggle theme" aria-label="Toggle dark/light mode">
+      <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <!-- ================= MAIN SCROLL AREA ================= -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ---------------- DASHBOARD PAGE ---------------- -->
+    <section class="page active" id="page-dashboard">
+
+      <!-- Hero ring: progress toward next 1 TON -->
+      <div class="hero-card glass">
+        <div class="hero-ring-wrap">
+          <svg class="hero-ring" viewBox="0 0 160 160">
+            <circle class="hero-ring-bg" cx="80" cy="80" r="70"></circle>
+            <circle class="hero-ring-fg" id="heroRingFg" cx="80" cy="80" r="70"></circle>
+          </svg>
+          <div class="hero-ring-center">
+            <span class="hero-ring-value" id="heroRingValue">0.00</span>
+            <span class="hero-ring-label">TON today</span>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-meta-row">
+            <span>Next 1 TON in</span>
+            <strong id="heroNextTon">—</strong>
+          </div>
+          <div class="hero-meta-row">
+            <span>Current streak</span>
+            <strong id="heroStreak">0 days 🔥</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat cards grid -->
+      <div class="stat-grid" id="statGrid">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- Quick add button lives as a floating action button (see below) -->
+
+      <h2 class="section-title">Earnings Overview</h2>
+      <div class="chart-card glass">
+        <div class="chart-card-head">
+          <h3>Daily TON (last 14 days)</h3>
+        </div>
+        <canvas id="dashboardDailyChart" height="180"></canvas>
+      </div>
+
+      <h2 class="section-title">Project Groups</h2>
+      <div class="group-grid" id="groupGrid">
+        <!-- populated by JS -->
+      </div>
+      <button class="btn-secondary full-width" id="addGroupBtn">+ New Project Group</button>
+
+      <h2 class="section-title">Achievements</h2>
+      <div class="badge-row" id="badgeRow">
+        <!-- populated by JS -->
+      </div>
+
+    </section>
+
+    <!-- ---------------- HISTORY PAGE ---------------- -->
+    <section class="page" id="page-history">
+      <h2 class="page-title">History</h2>
+
+      <div class="glass filter-card">
+        <input type="text" id="historySearch" class="input" placeholder="Search notes or project...">
+        <div class="filter-row">
+          <select id="historyProjectFilter" class="input select"></select>
+          <select id="historySort" class="input select">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="highest">Highest TON</option>
+            <option value="lowest">Lowest TON</option>
+          </select>
+        </div>
+        <div class="filter-row">
+          <input type="date" id="historyDateFilter" class="input">
+          <button class="btn-ghost small" id="clearFiltersBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="history-list" id="historyList">
+        <!-- populated by JS -->
+      </div>
+      <p class="empty-state" id="historyEmpty" style="display:none;">No entries yet. Tap + to add your first earning.</p>
+    </section>
+
+    <!-- ---------------- STATISTICS PAGE ---------------- -->
+    <section class="page" id="page-stats">
+      <h2 class="page-title">Statistics</h2>
+
+      <div class="stat-grid" id="statsDetailGrid">
+        <!-- populated by JS -->
+      </div>
+
+      <h2 class="section-title">Weekly Trend</h2>
+      <div class="chart-card glass">
+        <canvas id="weeklyChart" height="180"></canvas>
+      </div>
+
+      <h2 class="section-title">Monthly Trend</h2>
+      <div class="chart-card glass">
+        <canvas id="monthlyChart" height="180"></canvas>
+      </div>
+
+      <h2 class="section-title">Project Comparison</h2>
+      <div class="chart-card glass">
+        <canvas id="projectCompareChart" height="200"></canvas>
+      </div>
+
+      <h2 class="section-title">Earnings Share by Project</h2>
+      <div class="chart-card glass">
+        <canvas id="projectPieChart" height="220"></canvas>
+      </div>
+    </section>
+
+    <!-- ---------------- FORECAST PAGE ---------------- -->
+    <section class="page" id="page-forecast">
+      <h2 class="page-title">Forecast</h2>
+      <p class="page-subtitle">Based on your average daily earnings, here's what's ahead.</p>
+
+      <h3 class="section-title small">Time to reach targets</h3>
+      <div class="forecast-grid" id="forecastTargetGrid">
+        <!-- populated by JS -->
+      </div>
+
+      <h3 class="section-title small">Projected earnings</h3>
+      <div class="forecast-grid" id="forecastProjectionGrid">
+        <!-- populated by JS -->
+      </div>
+
+      <h3 class="section-title small">Countdown to next milestone</h3>
+      <div class="glass countdown-card" id="countdownCard">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <!-- ---------------- SETTINGS PAGE ---------------- -->
+    <section class="page" id="page-settings">
+      <h2 class="page-title">Settings</h2>
+
+      <div class="glass settings-card">
+        <h3 class="settings-heading">Currency</h3>
+        <label class="field-label">TON price in UZS</label>
+        <input type="number" id="tonPriceInput" class="input" placeholder="e.g. 33000" min="0" step="1">
+        <label class="field-label">Display currency</label>
+        <select id="currencySelect" class="input select">
+          <option value="UZS">UZS (сум)</option>
+          <option value="USD">USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="RUB">RUB (₽)</option>
+        </select>
+        <button class="btn-primary full-width" id="saveCurrencyBtn">Save Currency Settings</button>
+      </div>
+
+      <div class="glass settings-card">
+        <h3 class="settings-heading">Appearance</h3>
+        <div class="toggle-row">
+          <span>Dark mode</span>
+          <label class="switch">
+            <input type="checkbox" id="darkModeSwitch">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="glass settings-card">
+        <h3 class="settings-heading">Backup & Restore</h3>
+        <button class="btn-secondary full-width" id="exportBtn">⬇ Export JSON Backup</button>
+        <label class="btn-secondary full-width file-label">
+          ⬆ Import JSON Backup
+          <input type="file" id="importInput" accept="application/json" hidden>
+        </label>
+        <button class="btn-danger full-width" id="resetBtn">🗑 Reset All Data</button>
+      </div>
+
+      <div class="glass settings-card">
+        <h3 class="settings-heading">About</h3>
+        <p class="about-text">TON Earnings Tracker · v1.0<br>All data is stored locally on this device. Nothing is uploaded anywhere.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FLOATING ADD BUTTON ================= -->
+  <button class="fab" id="fabAddEntry" aria-label="Add earning entry">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+  <!-- ================= BOTTOM NAVIGATION ================= -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-page="history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <span>History</span>
+    </button>
+    <button class="nav-item" data-page="stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="20" x2="4" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="20" y1="20" x2="20" y2="14"/></svg>
+      <span>Stats</span>
+    </button>
+    <button class="nav-item" data-page="forecast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <span>Forecast</span>
+    </button>
+    <button class="nav-item" data-page="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.2.63.63 1.16 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ================= MODAL: ADD/EDIT ENTRY ================= -->
+<div class="modal-overlay" id="entryModalOverlay">
+  <div class="modal glass" id="entryModal">
+    <div class="modal-header">
+      <h3 id="entryModalTitle">Add Earning</h3>
+      <button class="icon-btn" id="closeEntryModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="entryId">
+      <label class="field-label">Date</label>
+      <input type="date" id="entryDate" class="input">
+
+      <label class="field-label">Project</label>
+      <select id="entryProject" class="input select"></select>
+
+      <label class="field-label">Today's TON</label>
+      <input type="number" id="entryAmount" class="input" placeholder="0.00" min="0" step="0.0001">
+
+      <label class="field-label">Notes (optional)</label>
+      <textarea id="entryNotes" class="input textarea" placeholder="e.g. Good rewards today"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="deleteEntryBtn" style="display:none;">Delete</button>
+      <button class="btn-primary" id="saveEntryBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: ADD/EDIT GROUP ================= -->
+<div class="modal-overlay" id="groupModalOverlay">
+  <div class="modal glass" id="groupModal">
+    <div class="modal-header">
+      <h3 id="groupModalTitle">New Project Group</h3>
+      <button class="icon-btn" id="closeGroupModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="groupId">
+      <label class="field-label">Name</label>
+      <input type="text" id="groupName" class="input" placeholder="e.g. TopGift Plus">
+
+      <label class="field-label">Number of accounts</label>
+      <input type="number" id="groupAccounts" class="input" placeholder="0" min="0" step="1">
+
+      <label class="field-label">Description (optional)</label>
+      <textarea id="groupDescription" class="input textarea" placeholder="Short description"></textarea>
+
+      <label class="field-label">Color label</label>
+      <div class="color-swatches" id="colorSwatches"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="deleteGroupBtn" style="display:none;">Delete</button>
+      <button class="btn-primary" id="saveGroupBtn">Save Group</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: CONFIRM ================= -->
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal glass confirm-modal">
+    <div class="modal-body">
+      <p id="confirmMessage">Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="confirmCancelBtn">Cancel</button>
+      <button class="btn-danger" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

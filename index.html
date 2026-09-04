@@ -1,170 +1,31 @@
-<!DOCTYPE html><html lang="uz">
+<!DOCTYPE html>
+<html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yosh hisoblagich 😐</title><style>
-    * {
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Flect — Telegram xizmatlari</title>
+<meta name="description" content="Telegram Stars, Premium, Gifts va akkauntlarni qulay narxda xarid qiling." />
+<meta name="theme-color" content="#F7F6FB" />
 
-    body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #111827, #374151);
-        padding: 20px;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    .box {
-        width: 100%;
-        max-width: 400px;
-        background: white;
-        padding: 30px 25px;
-        border-radius: 22px;
-        text-align: center;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
+<link rel="stylesheet" href="style.css" />
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
 
-    h1 {
-        margin-top: 0;
-        color: #111827;
-    }
+<a class="skip-link" href="#view">O‘tkazib yuborish</a>
 
-    p {
-        color: #6b7280;
-    }
-
-    input {
-        width: 100%;
-        padding: 15px;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        font-size: 18px;
-        text-align: center;
-        outline: none;
-    }
-
-    input:focus {
-        border-color: #2563eb;
-    }
-
-    button {
-        width: 100%;
-        margin-top: 15px;
-        padding: 15px;
-        border: none;
-        border-radius: 12px;
-        background: #2563eb;
-        color: white;
-        font-size: 17px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #1d4ed8;
-    }
-
-    #result {
-        margin-top: 20px;
-        font-size: 20px;
-        font-weight: bold;
-        color: #111827;
-    }
-
-    .payment {
-        display: none;
-        margin-top: 25px;
-        padding: 20px;
-        border-radius: 15px;
-        background: #fff7ed;
-        border: 2px solid #fb923c;
-    }
-
-    .card {
-        background: #111827;
-        color: white;
-        padding: 14px;
-        border-radius: 10px;
-        margin: 15px 0;
-        font-size: 18px;
-        letter-spacing: 1px;
-    }
-
-    .warning {
-        color: #dc2626;
-        font-size: 17px;
-        line-height: 1.5;
-        font-weight: bold;
-    }
-</style>
-
-</head><body><div class="box">
-
-    <h1>🧮 Yosh hisoblagich</h1>
-
-    <p>Tug‘ilgan yilingizni kiriting 👇</p>
-
-    <input type="number" id="year" placeholder="Masalan: 2007">
-
-    <button onclick="calculateAge()">Yoshimni hisoblash</button>
-
-    <div id="result"></div>
-
-    <button onclick="exitSite()">🚪 Chiqish</button>
-
-    <div class="payment" id="payment">
-
-        <h2>💸 To‘lov mavjud</h2>
-
-        <p>Saytdan foydalanish narxi:</p>
-
-        <h1>25 000 so‘m</h1>
-
-        <div class="card">
-            💳 5614 6868 1371 0202
-        </div>
-
-        <p class="warning">
-            Saytdan, birovning mahsulotidan foydalanib
-            pulini to‘lamasdan chiqib ketmoqchimisiz?
-            <br><br>
-            UYALING 🥲
-        </p>
-
-    </div>
-
+<div id="app">
+  <header class="topbar glass" id="topbar-slot"></header>
+  <main id="view"></main>
+  <nav class="bottom-nav" id="bottomnav" aria-label="Asosiy navigatsiya"></nav>
+  <div class="toast" id="toast"></div>
 </div>
 
-<script>
-    function calculateAge() {
-        const birthYear = document.getElementById("year").value;
-        const currentYear = new Date().getFullYear();
-
-        if (birthYear === "") {
-            document.getElementById("result").innerHTML =
-                "Avval tug‘ilgan yilingizni yozing 😐";
-            return;
-        }
-
-        const age = currentYear - birthYear;
-
-        document.getElementById("result").innerHTML =
-            `Sizning yoshingiz: ${age} yosh 🎉`;
-    }
-
-    function exitSite() {
-        document.getElementById("payment").style.display = "block";
-
-        window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: "smooth"
-        });
-    }
-</script>
-
+<script src="data/data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

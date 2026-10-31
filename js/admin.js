@@ -388,9 +388,23 @@ function refresh() {
 }
 
 /* ---------- Boshlash ---------- */
+// Telegram: full ekran (Bot API 8.0+, faqat telefonda), pastga surib yopilmasin, ranglar
+function tgSetup(TG){
+  try{
+    TG.ready(); TG.expand();
+    var v=function(x){return TG.isVersionAtLeast&&TG.isVersionAtLeast(x)};
+    if(v("7.7")&&TG.disableVerticalSwipes)TG.disableVerticalSwipes();
+    if(v("8.0")&&TG.requestFullscreen&&!TG.isFullscreen&&/^(android|ios)$/.test(TG.platform))TG.requestFullscreen();
+    if(TG.setHeaderColor)TG.setHeaderColor("#030a1c");
+    if(TG.setBackgroundColor)TG.setBackgroundColor("#030a1c");
+    if(v("7.10")&&TG.setBottomBarColor)TG.setBottomBarColor("#030a1c");
+  }catch(e){}
+}
+
 try { var acc = localStorage.getItem("flect-accent"); if (acc && acc !== "ocean") document.documentElement.setAttribute("data-accent", acc); } catch (e) {}
 if (TG) {
-  try { TG.ready(); TG.expand(); TG.setHeaderColor && TG.setHeaderColor("#030a1c"); TG.setBackgroundColor && TG.setBackgroundColor("#030a1c");
+  tgSetup(TG);
+  try {
     TG.BackButton && TG.BackButton.onClick(function () { if (sheetEl) closeSheet(); else location.href = "index.html"; }); } catch (e) {}
 }
 if (!API.configured()) gate("Sozlanmagan", "js/config.js faylida Supabase manzili va ochiq kalitini kiriting.");
@@ -403,3 +417,4 @@ else {
   });
 }
 })();
+ 

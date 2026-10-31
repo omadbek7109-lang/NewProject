@@ -265,7 +265,8 @@ a.row{color:inherit;text-decoration:none}
 .pay.ok{color:var(--ok)}
 .reason{font-size:13px;color:#ffb3a8}
 .st{flex:none;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent}
-.st-pending{background:rgba(255,190,60,.16);color:#ffd27a;border-color:rgba(255,190,60,.3)}
+.st-new,.st-pending{background:rgba(255,190,60,.16);color:#ffd27a;border-color:rgba(255,190,60,.3)}
+.st-paid{background:rgba(150,110,255,.18);color:#cbb8ff;border-color:rgba(150,110,255,.35)}
 .st-processing{background:rgba(70,150,255,.18);color:#9cc8ff;border-color:rgba(70,150,255,.35)}
 .st-completed{background:rgba(48,212,141,.16);color:#7ef0bd;border-color:rgba(48,212,141,.32)}
 .st-cancelled{background:rgba(255,95,95,.14);color:#ffaaa6;border-color:rgba(255,95,95,.3)}

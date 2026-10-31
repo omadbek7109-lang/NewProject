@@ -412,7 +412,20 @@ tabs.forEach(function(t,i){t.addEventListener("click",function(e){ if(e.detail==
 addEventListener("resize",function(){measure();S.x=S.t=centers[active];paint()});
 
 /* ---- Telegram ---- */
-if(TG){try{TG.ready();TG.expand();TG.BackButton&&TG.BackButton.onClick(back);TG.setHeaderColor&&TG.setHeaderColor("#030a1c");TG.setBackgroundColor&&TG.setBackgroundColor("#030a1c")}catch(e){}}
+// Telegram: full ekran (Bot API 8.0+, faqat telefonda), pastga surib yopilmasin, ranglar
+function tgSetup(TG){
+  try{
+    TG.ready(); TG.expand();
+    var v=function(x){return TG.isVersionAtLeast&&TG.isVersionAtLeast(x)};
+    if(v("7.7")&&TG.disableVerticalSwipes)TG.disableVerticalSwipes();
+    if(v("8.0")&&TG.requestFullscreen&&!TG.isFullscreen&&/^(android|ios)$/.test(TG.platform))TG.requestFullscreen();
+    if(TG.setHeaderColor)TG.setHeaderColor("#030a1c");
+    if(TG.setBackgroundColor)TG.setBackgroundColor("#030a1c");
+    if(v("7.10")&&TG.setBottomBarColor)TG.setBottomBarColor("#030a1c");
+  }catch(e){}
+}
+if(TG){tgSetup(TG);try{TG.BackButton&&TG.BackButton.onClick(back)}catch(e){}
+  if(TG.onEvent){TG.onEvent("fullscreenChanged",function(){setTimeout(function(){measure();S.x=S.t=centers[active];paint()},50)})}}
 
 /* ---- Boshlash ---- */
 show("home");
@@ -421,3 +434,4 @@ loadMe();
 measure(); S.x=S.t=centers[0]; paint();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){measure();S.x=S.t=centers[active];paint()});
 })();
+ 

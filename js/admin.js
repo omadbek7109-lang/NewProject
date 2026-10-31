@@ -1,6 +1,6 @@
 /* FLECT STARS — admin panel.
- * Brauzer hech kimni admin qilmaydi: har bir so'rov serverda initData + admins jadvali
- * bilan tekshiriladi. Bu fayl faqat interfeys.
+ * Brauzer hech kimni admin qilmaydi: har bir so'rov serverda initData imzosi va admin
+ * Telegram ID bilan tekshiriladi. Bu fayl faqat interfeys.
  */
 (function () {
 "use strict";
@@ -24,7 +24,7 @@ function fmtDate(s) { var d = new Date(s); return isNaN(d) ? "" : p2(d.getDate()
 function haptic(k) { try { if (TG && TG.HapticFeedback) { k === "ok" ? TG.HapticFeedback.notificationOccurred("success") : k === "err" ? TG.HapticFeedback.notificationOccurred("error") : TG.HapticFeedback.impactOccurred("light"); } } catch (e) {} }
 function ico(id, g) { return '<span class="ico ' + g + '"><svg style="color:#fff"><use href="#' + id + '"/></svg></span>'; }
 
-var STATUS = { pending: "Kutilmoqda", processing: "Jarayonda", completed: "Bajarildi", cancelled: "Bekor qilindi" };
+var STATUS = { new: "Yangi", paid: "To'lov tasdiqlangan", processing: "Bajarilmoqda", completed: "Bajarildi", cancelled: "Bekor qilindi" };
 var CATS = { stars: "Telegram Stars", premium: "Telegram Premium", accounts: "Akkauntlar", gifts: "Gifts", nft: "NFT / Kolleksiyalar" };
 var MONTHS = ["Yan", "Fev", "Mar", "Apr", "May", "Iyn", "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"];
 
@@ -85,7 +85,7 @@ function statsView() {
       kpi(s.users_total, "Jami") + kpi(s.users_new_today, "Bugun yangi") + kpi(s.users_new_7d, "7 kunda yangi") +
       kpi(s.users_new_30d, "30 kunda yangi") + kpi(s.users_active_7d, "Faol (7 kun)") + kpi(s.users_active_30d, "Faol (30 kun)") + '</div>' +
     '<div class="grp">Buyurtmalar</div><div class="kpis">' +
-      kpi(s.orders_total, "Jami") + kpi(s.orders_pending, "Kutilmoqda", "warn") + kpi(s.orders_processing, "Jarayonda") +
+      kpi(s.orders_total, "Jami") + kpi(s.orders_new, "Yangi", "warn") + kpi(s.orders_paid, "To'langan") + kpi(s.orders_processing, "Bajarilmoqda") +
       kpi(s.orders_completed, "Bajarildi", "good") + kpi(s.orders_cancelled, "Bekor qilindi", "bad") + '</div>' +
     '<section class="chart glass"><div class="chart-h"><b>Savdo (tushum)</b><div class="mini-seg">' +
       '<button data-unit="day" aria-pressed="' + (S.unit === "day") + '">30 kun</button><button data-unit="month" aria-pressed="' + (S.unit === "month") + '">12 oy</button></div></div>' +
@@ -154,7 +154,7 @@ function loadOrders(append) {
     .then(function () { S.oLoading = false; if (S.tab === "orders") paintOrders(); });
 }
 function ordersView() {
-  var f = [["", "Barchasi"], ["pending", "Kutilmoqda"], ["processing", "Jarayonda"], ["completed", "Bajarildi"], ["cancelled", "Bekor"]];
+  var f = [["", "Barchasi"], ["new", "Yangi"], ["paid", "To'langan"], ["processing", "Bajarilmoqda"], ["completed", "Bajarildi"], ["cancelled", "Bekor"]];
   return '<label class="search glass"><svg><use href="#u-search"/></svg><input id="oq" type="search" placeholder="Kod, ism, @username yoki ID" value="' + esc(S.oSearch) + '" autocomplete="off" aria-label="Buyurtma qidirish"></label>' +
     '<div class="chips" role="group" aria-label="Holat">' + f.map(function (c) { return '<button class="chip" data-ost="' + c[0] + '" aria-pressed="' + (S.oStatus === c[0]) + '">' + c[1] + '</button>'; }).join("") + '</div>' +
     '<div id="olist">' + ordersList() + '</div>';
@@ -212,11 +212,14 @@ function historyHtml(h) {
 }
 function orderSheet(o) {
   var name = [o.first_name, o.last_name].filter(Boolean).join(" ") || "Nomsiz";
-  var open = o.status === "pending" || o.status === "processing";
+  // Holatlar: new -> paid (to'lov) -> processing -> completed; bekor qilish yakuniy bo'lmagan har qanday holatdan.
+  // "Bajarildi" faqat to'lov tasdiqlangandan keyin (server ham shuni tekshiradi).
+  var open = o.status === "new" || o.status === "paid" || o.status === "processing";
   var acts = "";
-  if (o.status === "pending") acts += '<button class="buy blue" data-do="processing">Jarayonga olish</button>';
-  if (open) acts += '<button class="buy green" data-do="completed" data-confirm="Tasdiqlash: Bajarildi">Bajarildi</button>';
-  if (o.status !== "cancelled" && !o.payment_confirmed) acts += '<button class="buy ghosty' + (o.status === "pending" ? "" : " full") + '" data-do="pay" data-confirm="Tasdiqlash: to\'lov keldi">To\'lovni tasdiqlash</button>';
+  var full = o.status === "processing" ? " full" : ""; // bitta tugma qolsa, butun qatorni egallaydi
+  if (o.status === "new" || o.status === "paid") acts += '<button class="buy blue" data-do="processing">Jarayonga olish</button>';
+  if (open && o.payment_confirmed) acts += '<button class="buy green' + full + '" data-do="completed" data-confirm="Tasdiqlash: Bajarildi">Bajarildi</button>';
+  if (open && !o.payment_confirmed) acts += '<button class="buy ghosty' + full + '" data-do="pay" data-confirm="Tasdiqlash: to\'lov keldi">To\'lovni tasdiqlash</button>';
   if (open) acts += '<button class="buy red full" data-do="cancel-open">Bekor qilish</button>';
   return '<div class="sh-h"><div class="tx"><b>' + esc(o.code) + '</b><small>' + fmtDate(o.created_at) + '</small></div><span class="st st-' + o.status + '">' + STATUS[o.status] + '</span><button class="x" data-close aria-label="Yopish"><svg><use href="#u-x"/></svg></button></div>' +
     '<dl class="kv"><dt>Mahsulot</dt><dd>' + esc(o.quantity > 1 ? o.quantity + " × " + o.product_title : o.product_title) + '</dd>' +

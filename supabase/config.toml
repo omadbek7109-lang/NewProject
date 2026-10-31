@@ -1,0 +1,12 @@
+# FLECT STARS — Supabase CLI sozlamalari (faqat Edge Functions qismi).
+# Loyiha `supabase link --project-ref <ref>` bilan ulanadi.
+
+project_id = "flect-stars"
+
+# Frontend Supabase Auth JWT yubormaydi: foydalanuvchi Telegram initData imzosi orqali
+# funksiya ichida tekshiriladi. Shuning uchun platformaning JWT tekshiruvi o'chiriladi.
+[functions.api]
+verify_jwt = false
+
+[functions.admin-api]
+verify_jwt = false

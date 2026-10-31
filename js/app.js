@@ -78,7 +78,7 @@ function artHtml(p){
 var V={};
 V.home=function(){
   var tiles=SERVICES.slice(0,4).map(function(s){return '<button class="tile glass" data-go="'+s.id+'">'+ico(s.ico,s.g)+'<span><b>'+s.title+'</b><small>'+s.desc+'</small></span></button>'}).join("");
-  var st=ME.data&&ME.data.stats, open=st?(st.pending||0)+(st.processing||0):0;
+  var st=ME.data&&ME.data.stats, open=st?(st.new||0)+(st.paid||0)+(st.processing||0):0;
   var pop=CAT.loaded?CAT.items.filter(function(p){return p.is_popular&&p.is_active}).slice(0,4).map(prodRow).join(""):"";
   return '<header class="hdr"><div class="brand">'+ico("i-star","g-brand")+'<div><b>FLECT</b><small>Telegram xizmatlari barchasi bir joyda</small></div></div>'+
     '<button class="round" data-go="services" data-focus="1" aria-label="Qidirish"><svg><use href="#u-search"/></svg></button>'+
@@ -171,7 +171,7 @@ V.nft=function(){
 };
 
 /* ---- Buyurtmalarim ---- */
-var STATUS={pending:"Kutilmoqda",processing:"Jarayonda",completed:"Bajarildi",cancelled:"Bekor qilindi"};
+var STATUS={new:"Yangi",paid:"To'lov tasdiqlangan",processing:"Bajarilmoqda",completed:"Bajarildi",cancelled:"Bekor qilindi"};
 function orderCard(o){
   var pay=o.status==="cancelled"?"":(o.payment_confirmed?'<small class="pay ok">To\'lov tasdiqlandi</small>':'<small class="pay">To\'lov hali tasdiqlanmagan</small>');
   return '<div class="ord glass"><div class="ord-top"><span class="code">'+esc(o.code)+'</span><span class="st st-'+esc(o.status)+'">'+(STATUS[o.status]||esc(o.status))+'</span></div>'+

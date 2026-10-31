@@ -6,6 +6,9 @@ img{max-width:100%}
 
 /* Layout: bitta ustunli Telegram Mini App — sticky sarlavha, sahifa kontenti, pastda suzuvchi liquid glass dock (surib o'tiladigan linza) */
 :root{
+  /* Xavfsiz hudud: telefon (env) yoki Telegram full ekran (--tg-*) — qaysi biri katta bo'lsa */
+  --safe-top:max(env(safe-area-inset-top,0px),calc(var(--tg-safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px)));
+  --safe-bottom:max(env(safe-area-inset-bottom,0px),calc(var(--tg-safe-area-inset-bottom,0px) + var(--tg-content-safe-area-inset-bottom,0px)));
   color-scheme:dark;
   --bg0:#030a1c; --bg1:#0a1d45; --bg2:#14306b;
   --text:#f3f8ff; --muted:rgba(222,234,255,.64); --faint:rgba(222,234,255,.42);
@@ -16,8 +19,6 @@ img{max-width:100%}
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Manrope","Segoe UI",system-ui,sans-serif;
   --r-xl:30px; --r-lg:24px; --r-md:18px; --r-sm:13px;
   --spring:cubic-bezier(.2,.9,.25,1.2);
-  --tg-safe-top:0px; --tg-safe-right:0px; --tg-safe-bottom:0px; --tg-safe-left:0px;
-  --tg-content-safe-top:0px; --tg-content-safe-right:0px; --tg-content-safe-bottom:0px; --tg-content-safe-left:0px;
 }
 :root[data-accent="emerald"]{--a1:#13c08a;--a2:#3ee6c4;--glow:rgba(19,192,138,.5);--tint:rgba(19,192,138,.28);--bg1:#06241f;--bg2:#0c3d36}
 :root[data-accent="sunset"]{--a1:#ff7a2f;--a2:#ffb547;--glow:rgba(255,122,47,.5);--tint:rgba(255,122,47,.28);--bg1:#2a1209;--bg2:#4a2310}
@@ -25,10 +26,10 @@ img{max-width:100%}
 :root[data-accent="rose"]{--a1:#ff4f8b;--a2:#ff8fb8;--glow:rgba(255,79,139,.5);--tint:rgba(255,79,139,.28);--bg1:#2c0b1e;--bg2:#4d1636}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{min-height:100%;min-height:100dvh}
-body{min-height:var(--tg-viewport-stable-height,100dvh);background:var(--bg0);color:var(--text);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden;
-  padding-left:max(16px,env(safe-area-inset-left,0px),var(--tg-safe-left));padding-right:max(16px,env(safe-area-inset-right,0px),var(--tg-safe-right));padding-block:0}
-body::before{content:"";position:fixed;inset:0 0 auto;height:max(env(safe-area-inset-top,0px),var(--tg-safe-top));z-index:30;background:var(--bg0);pointer-events:none}
+html,body{min-height:100%}
+body{background:var(--bg0);color:var(--text);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:var(--safe-top) 0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:var(--safe-top);z-index:30;background:var(--bg0);pointer-events:none}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--a2);outline-offset:3px}
@@ -42,7 +43,7 @@ button{cursor:pointer}
 @keyframes drift1{to{transform:translate3d(8vmax,6vmax,0) scale(1.1)}}
 @keyframes drift2{to{transform:translate3d(-10vmax,8vmax,0) scale(.9)}}
 
-.app{width:100%;max-width:440px;min-height:var(--tg-viewport-stable-height,100dvh);margin:0 auto;padding-bottom:calc(120px + max(env(safe-area-inset-bottom,0px),var(--tg-safe-bottom),var(--tg-content-safe-bottom)))}
+.app{max-width:440px;margin:0 auto;padding-bottom:calc(120px + var(--safe-bottom))}
 
 /* Shisha yuzalar */
 .glass{background:linear-gradient(180deg,var(--glass2),var(--glass));border:1px solid var(--line);
@@ -50,8 +51,11 @@ button{cursor:pointer}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 12px 32px rgba(0,8,30,.28)}
 
 /* Sarlavha */
-.hdr{position:sticky;top:max(env(safe-area-inset-top,0px),var(--tg-content-safe-top));z-index:20;display:flex;align-items:center;gap:12px;padding-block:12px 12px;
-  margin-inline:-4px;padding-inline:4px;background:linear-gradient(180deg,var(--bg0) 10%,transparent)}
+.hdr{position:sticky;top:var(--safe-top);z-index:20;display:flex;align-items:center;gap:12px;padding-block:14px 12px;
+  margin-inline:-4px;padding-inline:4px}
+/* Sarlavha foni ekranning butun kengligida (yon tomonda "ramka" qolmasligi uchun) */
+.hdr::before{content:"";position:absolute;z-index:-1;top:0;bottom:-10px;left:calc(50% - 50vw);right:calc(50% - 50vw);pointer-events:none;
+  background:linear-gradient(180deg,var(--bg0) 0%,color-mix(in srgb,var(--bg0) 82%,transparent) 55%,transparent 100%)}
 .hdr h1{flex:1;min-width:0;margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand{flex:1;display:flex;align-items:center;gap:11px;min-width:0}
 .brand b{display:block;font-size:20px;font-weight:800;letter-spacing:.04em}
@@ -201,8 +205,8 @@ details p{margin:0 0 15px;color:var(--muted);font-size:14px}
 
 /* ===== Liquid dock ===== */
 .dock{position:fixed;z-index:40;left:0;right:0;bottom:0;display:flex;justify-content:center;pointer-events:none;
-  padding-bottom:calc(12px + max(env(safe-area-inset-bottom,0px),var(--tg-safe-bottom),var(--tg-content-safe-bottom)));
-  padding-left:max(14px,env(safe-area-inset-left,0px),var(--tg-safe-left));padding-right:max(14px,env(safe-area-inset-right,0px),var(--tg-safe-right))}
+  padding-bottom:calc(14px + var(--safe-bottom));
+  padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
 .track{pointer-events:auto;position:relative;width:100%;max-width:420px;height:68px;border-radius:999px;display:grid;grid-template-columns:repeat(5,1fr);
   padding:5px;touch-action:none;user-select:none;-webkit-user-select:none;
   background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));border:1px solid var(--line2);
@@ -226,7 +230,7 @@ details p{margin:0 0 15px;color:var(--muted);font-size:14px}
 .tab.near svg{transform:scale(1.1)}
 .dragging .tab:not(.near){color:var(--faint)}
 
-.toast{position:fixed;left:50%;bottom:calc(100px + max(env(safe-area-inset-bottom,0px),var(--tg-safe-bottom),var(--tg-content-safe-bottom)));z-index:70;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+.toast{position:fixed;left:50%;bottom:calc(100px + var(--safe-bottom));z-index:70;transform:translate(-50%,20px);opacity:0;pointer-events:none;
   padding:11px 18px;border-radius:999px;font-weight:700;font-size:14px;background:rgba(20,30,55,.85);border:1px solid var(--line2);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:all .35s var(--spring)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -280,17 +284,4 @@ a.row{color:inherit;text-decoration:none}
 .gstar{display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 7px;border-radius:999px;font-size:12px;font-weight:800;
   font-variant-numeric:tabular-nums;color:#ffd66b;background:rgba(255,190,40,.14);border:1px solid rgba(255,200,80,.28)}
 .gstar svg{width:13px;height:13px;color:#ffc531}
-
-/* Telegram Mini App viewport: fullscreen va safe-area moslashuvi */
-html.tg-fullscreen,html.tg-fullscreen body{min-height:var(--tg-viewport-height,100dvh)}
-html.tg-fullscreen .app{min-height:var(--tg-viewport-stable-height,var(--tg-viewport-height,100dvh))}
-@supports (height: 100svh){html,body{min-height:100svh}}
-@media (max-width:380px){
-  .hdr{gap:9px;padding-top:10px;padding-bottom:10px}
-  .brand{gap:9px}.brand b{font-size:18px}.brand small{font-size:11px}
-  .round{width:39px;height:39px}
-  .dock{padding-left:10px;padding-right:10px}
-  .track{height:64px;padding:4px}
-  .orb{top:4px;height:54px}
-  .tab{font-size:9.5px;gap:2px}.tab svg{width:21px;height:21px}
-      } 
+ 

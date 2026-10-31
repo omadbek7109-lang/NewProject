@@ -1,6 +1,6 @@
 /* FLECT STARS — admin panel (asosiy style.css ustiga) */
 .adm{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:999px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:15}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:999px;position:sticky;top:calc(max(env(safe-area-inset-top,0px),var(--tg-content-safe-top)) + 12px);z-index:15}
 .seg button{border:0;background:none;padding:11px 6px;border-radius:999px;font-weight:700;font-size:14px;color:var(--muted);transition:all .3s var(--spring)}
 .seg button[aria-pressed="true"]{color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--a1) 60%,rgba(255,255,255,.15)),color-mix(in srgb,var(--a1) 35%,transparent));
   box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 6px 16px var(--glow)}
@@ -63,8 +63,8 @@
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(2,6,20,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;justify-content:center}
 .scrim.show{opacity:1}
-.sheet{width:100%;max-width:480px;max-height:calc(100% - 24px - env(safe-area-inset-top,0px));overflow:auto;overscroll-behavior:contain;
-  margin:0 10px calc(10px + env(safe-area-inset-bottom,0px));padding:18px 18px 20px;border-radius:30px;
+.sheet{width:100%;max-width:480px;max-height:calc(100% - 24px - max(env(safe-area-inset-top,0px),var(--tg-safe-top),var(--tg-content-safe-top)));overflow:auto;overscroll-behavior:contain;
+  margin:0 10px calc(10px + max(env(safe-area-inset-bottom,0px),var(--tg-safe-bottom),var(--tg-content-safe-bottom)));padding:18px 18px 20px;border-radius:30px;
   background:linear-gradient(165deg,color-mix(in srgb,var(--a1) 22%,rgba(16,26,56,.92)),rgba(8,15,34,.96));
   border:1px solid var(--line2);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 30px 70px rgba(0,0,0,.55);
   transform:translateY(60px);transition:transform .42s var(--spring);display:flex;flex-direction:column;gap:14px}
@@ -100,4 +100,4 @@
 .gate{margin-top:20vh}
 @media (max-width:360px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.row2{grid-template-columns:1fr}}
 /* Admin sahifada pastki dock yo'q — bildirishnoma pastroqda */
-.admin-page .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+.admin-page .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))} 

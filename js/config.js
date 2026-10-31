@@ -5,8 +5,8 @@
  */
 window.FLECT_CONFIG = {
   // Supabase: Project Settings -> API
-  supabaseUrl: "https://YOUR-PROJECT-REF.supabase.co",
-  supabaseKey: "YOUR-PUBLISHABLE-OR-ANON-KEY",
+  supabaseUrl: "https://kyqzoamprcmupxvssokj.supabase.co",
+  supabaseKey: "sb_publishable_H6_XA3R6dchJxbseL3XmQw_EqUnWfVX",
   // Mijoz buyurtma xabarini yuboradigan Telegram akkaunt
   adminUsername: "flect_stars"
 };
